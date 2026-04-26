@@ -42,7 +42,6 @@ No backend. No cloud. No compromise.
 ## How To Use 
  
 ### Encrypting a File 
-### Encrypting a File 
 1. Open index.html in any modern browser 
 2. Click the Encrypt tab 
 3. Drag and drop your file or click to browse 
