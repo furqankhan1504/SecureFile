@@ -91,7 +91,7 @@ SecureFile/
 - LICENSE  - SECURITY.md 
 - CONTRIBUTING.md 
 - .gitignore 
-- screenshots/ 
+- screenshots 
  
 --- 
  
@@ -103,8 +103,6 @@ This project is licensed under the MIT License.
  
 ## Author 
  
-Furqan 
-Muneeb
-Umer
+Furqan-Muneeb-Umer
  
 If SecureFile helped you please consider giving it a star! 
