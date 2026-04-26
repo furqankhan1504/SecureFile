@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SecureFile</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+
+    body {
+      background: #050510;
+      overflow-x: hidden;
+    }
+
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.15;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .orb-1 {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, #6366f1, #8b5cf6, transparent);
+      top: -200px; left: -100px;
+      animation: floatOrb1 20s ease-in-out infinite;
+    }
+
+    .orb-2 {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, #06b6d4, #3b82f6, transparent);
+      bottom: -150px; right: -100px;
+      animation: floatOrb2 25s ease-in-out infinite;
+    }
+
+    .orb-3 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, #a855f7, #ec4899, transparent);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      animation: floatOrb3 18s ease-in-out infinite;
+    }
+
+    @keyframes floatOrb1 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      25% { transform: translate(100px, 80px) scale(1.1); }
+      50% { transform: translate(50px, 150px) scale(0.9); }
+      75% { transform: translate(-50px, 60px) scale(1.05); }
+    }
+
+    @keyframes floatOrb2 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      25% { transform: translate(-80px, -60px) scale(1.15); }
+      50% { transform: translate(-120px, -100px) scale(0.95); }
+      75% { transform: translate(-40px, -80px) scale(1.1); }
+    }
+
+    @keyframes floatOrb3 {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); }
+      33% { transform: translate(-40%, -60%) scale(1.2); }
+      66% { transform: translate(-60%, -40%) scale(0.8); }
+    }
+
+    #particles {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .grid-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-image:
+        linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .glass-card {
+      background: rgba(15, 15, 35, 0.6);
+      backdrop-filter: blur(40px);
+      -webkit-backdrop-filter: blur(40px);
+      border: 1px solid rgba(99, 102, 241, 0.15);
+      box-shadow:
+        0 0 0 1px rgba(99, 102, 241, 0.05),
+        0 20px 60px -15px rgba(0, 0, 0, 0.5),
+        0 0 100px -20px rgba(99, 102, 241, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .glass-card:hover {
+      border-color: rgba(99, 102, 241, 0.3);
+      box-shadow:
+        0 0 0 1px rgba(99, 102, 241, 0.1),
+        0 25px 70px -15px rgba(0, 0, 0, 0.6),
+        0 0 120px -20px rgba(99, 102, 241, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      transform: translateY(-2px);
+    }
+
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      top: -1px; left: -1px;
+      right: -1px; bottom: -1px;
+      border-radius: inherit;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), transparent 40%, transparent 60%, rgba(168, 85, 247, 0.3));
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+
+    .glass-card:hover::before { opacity: 1; }
+
+    .toggle-container {
+      background: rgba(15, 15, 35, 0.8);
+      border: 1px solid rgba(99, 102, 241, 0.1);
+    }
+
+    #slider {
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.4), 0 0 40px rgba(99, 102, 241, 0.1);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .tab-btn {
+      transition: all 0.3s;
+      font-weight: 500;
+      font-size: 0.9rem;
+      letter-spacing: 0.025em;
+    }
+
+    .tab-btn.active { color: white; text-shadow: 0 0 10px rgba(255, 255, 255, 0.3); }
+    .tab-btn:not(.active) { color: rgba(148, 163, 184, 0.7); }
+    .tab-btn:not(.active):hover { color: rgba(148, 163, 184, 1); }
+
+    .file-drop-zone {
+      position: relative;
+      border: 2px dashed rgba(99, 102, 241, 0.2);
+      background: rgba(99, 102, 241, 0.03);
+      border-radius: 16px;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    .file-drop-zone::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.05), transparent);
+      transition: left 0.6s;
+    }
+
+    .file-drop-zone:hover::before { left: 100%; }
+
+    .file-drop-zone:hover {
+      border-color: rgba(99, 102, 241, 0.5);
+      background: rgba(99, 102, 241, 0.06);
+      box-shadow: 0 0 30px rgba(99, 102, 241, 0.08);
+    }
+
+    .file-drop-zone.drag-over {
+      border-color: rgba(99, 102, 241, 0.7);
+      background: rgba(99, 102, 241, 0.1);
+      box-shadow: 0 0 40px rgba(99, 102, 241, 0.15);
+      transform: scale(1.02);
+    }
+
+    .file-drop-zone.has-file {
+      border-color: rgba(34, 197, 94, 0.4);
+      background: rgba(34, 197, 94, 0.05);
+    }
+
+    .password-wrapper { position: relative; }
+
+    .password-input {
+      background: rgba(15, 15, 35, 0.6);
+      border: 1px solid rgba(99, 102, 241, 0.15);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-size: 0.95rem;
+    }
+
+    .password-input:focus {
+      border-color: rgba(99, 102, 241, 0.5);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1), 0 0 20px rgba(99, 102, 241, 0.1);
+      outline: none;
+      background: rgba(15, 15, 35, 0.8);
+    }
+
+    .password-input::placeholder { color: rgba(148, 163, 184, 0.4); }
+
+    .strength-bar {
+      height: 3px;
+      border-radius: 3px;
+      transition: all 0.5s;
+      background: rgba(30, 30, 60, 0.5);
+      overflow: hidden;
+    }
+
+    .strength-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      width: 0%;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(148, 163, 184, 0.5);
+      cursor: pointer;
+      transition: color 0.3s;
+      z-index: 5;
+    }
+
+    .toggle-password:hover { color: rgba(148, 163, 184, 0.9); }
+
+    .action-btn {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      font-weight: 600;
+      letter-spacing: 0.025em;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.3), 0 4px 15px rgba(99, 102, 241, 0.2);
+    }
+
+    .action-btn::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transition: left 0.5s;
+    }
+
+    .action-btn:hover::before { left: 100%; }
+
+    .action-btn:hover {
+      box-shadow: 0 0 30px rgba(99, 102, 241, 0.5), 0 8px 25px rgba(99, 102, 241, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .action-btn:active { transform: translateY(0) scale(0.98); }
+
+    .action-btn.decrypt-mode {
+      background: linear-gradient(135deg, #06b6d4, #3b82f6);
+      box-shadow: 0 0 20px rgba(6, 182, 212, 0.3), 0 4px 15px rgba(6, 182, 212, 0.2);
+    }
+
+    .action-btn.decrypt-mode:hover {
+      box-shadow: 0 0 30px rgba(6, 182, 212, 0.5), 0 8px 25px rgba(6, 182, 212, 0.3);
+    }
+
+    .action-btn.processing { pointer-events: none; opacity: 0.8; }
+
+    .spinner {
+      display: inline-block;
+      width: 18px; height: 18px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .status-msg { font-size: 0.85rem; transition: all 0.4s; }
+    .status-msg.success { color: #4ade80; text-shadow: 0 0 10px rgba(74, 222, 128, 0.3); }
+    .status-msg.error { color: #f87171; text-shadow: 0 0 10px rgba(248, 113, 113, 0.3); }
+
+    .logo-icon {
+      display: inline-block;
+      animation: pulse-glow 3s ease-in-out infinite;
+      font-size: 1.5rem;
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { filter: drop-shadow(0 0 5px rgba(99, 102, 241, 0.5)); }
+      50% { filter: drop-shadow(0 0 15px rgba(99, 102, 241, 0.8)); }
+    }
+
+    .nav-glass {
+      background: rgba(5, 5, 16, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(99, 102, 241, 0.08);
+    }
+
+    .hero-title {
+      background: linear-gradient(135deg, #e2e8f0 0%, #c7d2fe 30%, #a78bfa 60%, #818cf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-subtitle { color: rgba(148, 163, 184, 0.7); }
+
+    .security-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      border-radius: 100px;
+      background: rgba(99, 102, 241, 0.08);
+      border: 1px solid rgba(99, 102, 241, 0.15);
+      font-size: 0.75rem;
+      color: rgba(165, 180, 252, 0.8);
+      letter-spacing: 0.05em;
+      animation: badge-float 4s ease-in-out infinite;
+    }
+
+    @keyframes badge-float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    .badge-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #4ade80;
+      box-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
+      animation: blink 2s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .file-info {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: rgba(34, 197, 94, 0.06);
+      border: 1px solid rgba(34, 197, 94, 0.15);
+      border-radius: 10px;
+      font-size: 0.8rem;
+      color: rgba(134, 239, 172, 0.9);
+      animation: slideIn 0.3s ease-out;
+    }
+
+    .file-info.show { display: flex; }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fancy-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.2), transparent);
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.75rem;
+      color: rgba(148, 163, 184, 0.5);
+    }
+
+    .feature-dot {
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: rgba(99, 102, 241, 0.5);
+    }
+
+    .fade-up {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.8s ease-out forwards;
+    }
+
+    .fade-up-delay-1 { animation-delay: 0.1s; }
+    .fade-up-delay-2 { animation-delay: 0.2s; }
+    .fade-up-delay-3 { animation-delay: 0.3s; }
+    .fade-up-delay-4 { animation-delay: 0.4s; }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #050510; }
+    ::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.3); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(99, 102, 241, 0.5); }
+  </style>
+</head>
+
+<body class="text-white min-h-screen">
+
+  <!-- BG EFFECTS -->
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="grid-overlay"></div>
+  <canvas id="particles"></canvas>
+
+  <!-- CONTENT -->
+  <div class="relative z-10">
+
+    <!-- NAV -->
+    <nav class="nav-glass sticky top-0 z-50 flex justify-between items-center px-8 py-4">
+      <div class="flex items-center gap-3">
+        <span class="logo-icon">🔐</span>
+        <h1 class="text-lg font-bold tracking-tight bg-gradient-to-r from-white to-indigo-300 bg-clip-text text-transparent">SecureFile</h1>
+      </div>
+      <div class="security-badge">
+        <span class="badge-dot"></span>
+        AES-256 ENCRYPTION
+      </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="text-center pt-16 pb-10 px-6 fade-up">
+      <h2 class="hero-title text-5xl md:text-6xl font-black mb-4 tracking-tight leading-tight">
+        Secure Your Files
+      </h2>
+      <p class="hero-subtitle text-lg max-w-md mx-auto leading-relaxed">
+        Military-grade encryption, right in your browser. <br>
+        No uploads. No servers. Just privacy.
+      </p>
+    </section>
+
+    <!-- CARD -->
+    <div class="flex justify-center px-4 pb-16">
+      <div class="glass-card relative w-full max-w-lg rounded-3xl p-8 md:p-10 fade-up fade-up-delay-2">
+
+        <!-- TOGGLE -->
+        <div class="toggle-container relative flex rounded-xl p-1 mb-8">
+          <div id="slider" class="absolute top-1 bottom-1 left-1 w-[calc(50%-4px)] rounded-lg"></div>
+          <button id="encryptTab" class="tab-btn active w-1/2 z-10 py-2.5 rounded-lg">
+            <span class="flex items-center justify-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+              Encrypt
+            </span>
+          </button>
+          <button id="decryptTab" class="tab-btn w-1/2 z-10 py-2.5 rounded-lg">
+            <span class="flex items-center justify-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"/></svg>
+              Decrypt
+            </span>
+          </button>
+        </div>
+
+        <!-- FILE DROP ZONE -->
+        <div id="fileDropZone" class="file-drop-zone p-8 mb-4 text-center fade-up fade-up-delay-3">
+          <input id="fileInput" type="file" class="hidden"/>
+          <div id="dropContent">
+            <div class="mb-3">
+              <svg class="w-10 h-10 mx-auto text-indigo-400 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+              </svg>
+            </div>
+            <p class="text-sm text-gray-400 mb-1">Drop your file here or <span class="text-indigo-400 hover:text-indigo-300 cursor-pointer font-medium">browse</span></p>
+            <p class="text-xs text-gray-600">Any file type supported</p>
+          </div>
+        </div>
+
+        <!-- FILE INFO -->
+        <div id="fileInfo" class="file-info mb-4">
+          <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+          <span id="fileName" class="truncate flex-1"></span>
+          <span id="fileSize" class="text-gray-500 flex-shrink-0"></span>
+          <button id="removeFile" class="text-gray-500 hover:text-red-400 transition-colors ml-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+
+        <!-- DIVIDER -->
+        <div class="fancy-divider my-6"></div>
+
+        <!-- PASSWORD -->
+        <div class="password-wrapper mb-3 fade-up fade-up-delay-3">
+          <label id="passwordLabel" class="block text-xs text-gray-500 mb-2 tracking-wider uppercase font-medium">Encryption Key</label>
+          <div class="relative">
+            <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+            </svg>
+            <input id="password" type="password" placeholder="Enter your password"
+              class="password-input w-full pl-11 pr-11 py-3 rounded-xl" autocomplete="off"/>
+            <button id="togglePassword" class="toggle-password" type="button">
+              <svg id="eyeIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- STRENGTH BAR -->
+        <div id="strengthWrapper" class="mb-6">
+          <div class="strength-bar">
+            <div id="strengthFill" class="strength-fill"></div>
+          </div>
+          <p id="strengthText" class="text-xs mt-1.5 h-4 text-gray-600 transition-all"></p>
+        </div>
+
+        <!-- ACTION BUTTON -->
+        <button id="actionBtn" class="action-btn w-full py-3.5 rounded-xl text-sm fade-up fade-up-delay-4">
+          <span id="btnContent">
+            <span class="flex items-center justify-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+              Encrypt File
+            </span>
+          </span>
+        </button>
+
+        <!-- STATUS -->
+        <p id="status" class="status-msg text-center mt-4 min-h-[20px]"></p>
+
+        <!-- FEATURES -->
+        <div class="fancy-divider mt-6 mb-4"></div>
+        <div class="flex justify-center gap-6 flex-wrap">
+          <div class="feature-item"><span class="feature-dot"></span> Client-side only</div>
+          <div class="feature-item"><span class="feature-dot"></span> Zero knowledge</div>
+          <div class="feature-item"><span class="feature-dot"></span> No data stored</div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+
+</body>
+</html>
