@@ -42,7 +42,7 @@ No backend. No cloud. No compromise.
 ## How To Use 
  
 ### Encrypting a File 
-1. Open index.html in any modern browser 
+1. Open SecureFile in any modern browser 
 2. Click the Encrypt tab 
 3. Drag and drop your file or click to browse 
 4. Enter a strong password 
@@ -70,17 +70,10 @@ Important Security Notes:
 - Password strength matters. Use a long random passphrase. 
 - Never share your password through the same channel as the file. 
 - No password recovery. Forgotten passwords cannot be recovered. 
-- For maximum security run index.html completely offline. 
+- For maximum security run SecureFile completely offline. 
  
 --- 
  
-## Running Locally 
- 
-git clone https://github.com/furqankhan1504/SecureFile.git 
-cd SecureFile 
-start index.html 
- 
---- 
  
 ## Project Structure 
  
